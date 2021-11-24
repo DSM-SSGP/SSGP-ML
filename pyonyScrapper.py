@@ -8,7 +8,7 @@ from bs4 import BeautifulSoup
 BASE_URL = 'https://pyony.com/search'
 conv = {
     'gs25(지에스25)': 'GS25',
-    '7-eleven(세븐일레븐)': 'Seven Eleven',
+    '7-eleven(세븐일레븐)': 'SevenEleven',
     'cu(씨유)': 'CU',
     'emart24(이마트24)': 'Emart24',
     'ministop(미니스톱)': 'MINISTOP'

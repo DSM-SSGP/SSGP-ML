@@ -82,16 +82,16 @@ def clustering(df, before, metric=subst_dist):
             'imagePath':    item['path']
         })
 
+    for item in before.iloc:
+        key = maps[item['name']]
+
+        if item_list.get(key) != None:
+            continue
+
+        item_list[key] = {"name": item["name"], "sellings": []}
+
     return list(item_list.values())
 
-# 할인하지 않는 상품들에 대한 정보들도 저장은 해 놓아야 할 것이다.
-# 추천 알고리즘 등에 활용하기 위해 필요한 것들이다.
-
-# 이전에 갖고 있던 상품 목록들도 클러스터링에 추가해서 함께 클러스터링한 후, 
-# 이전에 상품 목록에 포함되어 있던 상품들이 어떤 클러스터 안에 존재하는 경우 그 클러스터의 이름은 이전에 갖고 있던 이름으로 고정한다.
-# 이전에 상품 목록에 포함되어 있던 상품들이 어떤 클러스터 안에 존재하지 않는 경우 {"name": 상품명, "conv": []}의 형태로 저장해놓고, 쿼리할 때 거른다.
-
-# ↑ 나중에 이거 함
 if __name__ == '__main__':
     client = pymongo.MongoClient('mongodb://13.124.215.192:27017/')
     db = client['ssgp']['product']
@@ -101,9 +101,8 @@ if __name__ == '__main__':
     df = getPageAll()
     item_list = clustering(df, pre)
 
-    db.update_many({}, {"$set": {"sellings": []}})
-    for item in tqdm(item_list):
-        db.update_one({'name': item['name']}, {'$set': {'sellings': item['sellings']}}, upsert=True)
+    db.delete_many({})
+    db.insert_many(item_list)
     
     db.update_many({'likeUserIds': {"$exists": False}}, {'$set': {'likeUserIds': []}})
     
