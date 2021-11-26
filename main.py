@@ -2,7 +2,6 @@ import pymongo
 import json
 
 import numpy as np
-import random
 
 from tqdm import tqdm
 from sklearn.metrics.pairwise import cosine_similarity
@@ -61,7 +60,7 @@ user_sim_arr = cosine_similarity(array)
 @app.route('/recommand/<user_id>')
 def recommand(user_id):
     recom = sorted(
-        [(items[i]['name'], predict(user_id, i)) for i, _ in tqdm(enumerate(items)) if 0 not in _['likeUserIds']],
+        [(items[i]['name'], predict(user_id, i)) for i, _ in enumerate(items) if 0 not in _['likeUserIds']],
         key=lambda x: x[1],
         reverse=True
     )
