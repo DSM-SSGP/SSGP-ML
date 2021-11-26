@@ -3,7 +3,6 @@ import json
 
 import numpy as np
 
-from tqdm import tqdm
 from sklearn.metrics.pairwise import cosine_similarity
 
 from flask import Flask
