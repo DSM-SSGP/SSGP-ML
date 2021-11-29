@@ -69,4 +69,4 @@ def recommand(user_id):
     return json.dumps(recom)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0')
