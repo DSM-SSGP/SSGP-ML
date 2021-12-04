@@ -56,10 +56,35 @@ array = similarity_array()
 item_sim_arr = cosine_similarity(array.T)
 user_sim_arr = cosine_similarity(array)
 
+def extract_sellings(sellingss):
+    dct = [{
+        'brand': sellings['brand'],
+        'content': sellings['content'],
+        'selling_price': sellings['sellingPrice'],
+        'price': sellings['price']
+    } for sellings in sellingss]
+    return dct
+    
+def extract_image_path(sellings):
+    return sellings[0]['imagePath']
+
 @app.route('/recommand/<user_id>')
 def recommand(user_id):
     recom = sorted(
-        [(items[i]['name'], predict(user_id, i)) for i, _ in enumerate(items) if 0 not in _['likeUserIds']],
+        [
+            (
+                {
+                    'product_id': str(items[i]['_id']),
+                    'name': items[i]['name'],
+                    'sellings': extract_sellings(items[i]['sellings']),
+                    'image_path': extract_image_path(items[i]['sellings']),
+                    'price': min([x['price'] for x in items[i]['sellings']]),
+                    'like_count': len(items[i]['likeUserIds'])
+                }, 
+                predict(user_id, i)
+            )
+            for i, _ in enumerate(items) if 0 not in _['likeUserIds']
+        ],
         key=lambda x: x[1],
         reverse=True
     )
